@@ -41,8 +41,11 @@ class Nav extends Component {
               >
               </Typography>
               <Tabs>
-                <NavLink style={{ color: "white" }} to="/home">
+                <NavLink style={{ color: "white" }} to="/Home">
                   <Tab label="Home" color="inherit" />
+                </NavLink>
+                <NavLink style={{ color: "white" }} to="/TransactionUpload">
+                  <Tab label="Transaction Upload" color="inherit" />
                 </NavLink>
               </Tabs>
             </Grid>

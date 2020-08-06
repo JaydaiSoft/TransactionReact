@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Nav from './components/Nav'
 import Home from './components/Home';
+import TransactionUpload from './components/TransactionUpload'
 import './App.css';
 
 class App extends Component {
@@ -18,7 +19,8 @@ class App extends Component {
 					<div>
 						<Nav />
 						<Switch>
-							<Route path="/home" component={Home} />
+							<Route path="/Home" component={Home} />
+              <Route path="/TransactionUpload" component={TransactionUpload} />
 							<Route component={Home} />
 						</Switch>
 					</div>
