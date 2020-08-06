@@ -12,7 +12,8 @@ class TransactionUpload extends React.Component {
     this.state = {
       filename: '',
       transaction: [],
-      error: ''
+      error: '',
+      success:''
     };
   }
 
@@ -25,16 +26,21 @@ class TransactionUpload extends React.Component {
 
   SetFileName(data) {
     this.setState({ filename: data });
+    this.setState({ success: '' });
   }
 
   async upload() {
     const self = this;
-    const url = 'http://localhost:xxxxx/2C2P/transactionupload';
-    const payload = self.state.transaction;
+    const url = 'http://localhost:53293/api/Transaction/uploadtransactions';
 
-    await axios.post(url, payload)
+    let data = {
+      transactionPayloads: self.state.transaction
+  };
+
+    await axios.post(url, data)
       .then((response) => {
         console.log(response);
+        self.setState({ success: response.data.message });
         self.setState({ transaction: [] });
         self.setState({ filename: '' });
       }, (error) => {
@@ -50,7 +56,7 @@ class TransactionUpload extends React.Component {
     let file = files[0];
     reader.onload = function (e) {
       e.preventDefault();
-      let Transactions = [];
+      let transactionPayloads = [];
       let transaction = {};
 
       if (file.type === "text/xml") {
@@ -58,13 +64,14 @@ class TransactionUpload extends React.Component {
         parser.parseString(reader.result, (err, result) => {
           result.TRANSACTIONS.TRANSACTION.forEach((element) => {
             transaction = {
-              TransactionId: element.TRANSACTIONID[0],
-              TransactionDate: element.TRANSACTIONDATE[0],
-              PaymentDetails: { Amount: element.PAYMENTDETAILS[0].AMOUNT[0], CurrencyCode: element.PAYMENTDETAILS[0].CURRENCYCODE[0] },
-              Status: element.STATUS[0]
+              transactionId: element.TRANSACTIONID[0].trim(),
+              amount:element.PAYMENTDETAILS[0].AMOUNT[0].trim(),
+              currencyCode:element.PAYMENTDETAILS[0].CURRENCYCODE[0].trim(),
+              TransactionDate: element.TRANSACTIONDATE[0].trim(),
+              Status: element.STATUS[0].trim()
             };
 
-            Transactions.push(transaction);
+            transactionPayloads.push(transaction);
 
           });
         });
@@ -88,19 +95,23 @@ class TransactionUpload extends React.Component {
         }
 
         result.forEach((element) => {
+          let dt  = element.TransactionDate.trim().split(/\-|\s/)
+          var dateParts = dt[0].split("/");
+          var fulldate = dateParts[2]+"-"+dateParts[1]+"-"+dateParts[0]+"T"+dt[1]+"Z";
           transaction = {
-            TransactionId: element.TransactionId,
-            TransactionDate: element.TransactionDate,
-            PaymentDetails: { Amount: element.Amount, CurrencyCode: element.CurrencyCode },
-            Status: element.Status
+            transactionId: element.TransactionId.trim(),
+            amount:element.Amount.trim(),
+            currencyCode:element.CurrencyCode.trim(),
+            transactionDate:fulldate,
+            status: element.Status.trim()
           };
 
-          Transactions.push(transaction);
+          transactionPayloads.push(transaction);
         })
       }
 
 
-      self.SetTransactions(Transactions);
+      self.SetTransactions(transactionPayloads);
       self.SetFileName(file.name);
     }
 
@@ -133,6 +144,7 @@ class TransactionUpload extends React.Component {
           <br></br>
           <p className="lead">{this.state.filename}</p>
           <p className="lead" style={error}>{this.state.error}</p>
+          <p className="lead">{this.state.success}</p>
           <span style={inline}>
             <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv,.xml'}>
               <Button style={btnbrowse} size="sm">Browse</Button>{' '}
