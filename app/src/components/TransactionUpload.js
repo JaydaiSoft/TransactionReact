@@ -11,6 +11,7 @@ class TransactionUpload extends React.Component {
     super(props);
     this.state = {
       filename: '',
+      filesize:0.00,
       transaction: [],
       error: '',
       success:''
@@ -31,6 +32,10 @@ class TransactionUpload extends React.Component {
 
   async upload() {
     const self = this;
+    if(self.state.filesize > 1){
+      self.setState({error:"File size is too large for upload"})
+      return;
+    }
     const url = 'http://localhost:53293/api/Transaction/uploadtransactions';
 
     let data = {
@@ -54,6 +59,10 @@ class TransactionUpload extends React.Component {
     var reader = new FileReader();
     const self = this;
     let file = files[0];
+    let size = file.size
+    let maxsize = (size/1024);
+    self.setState({filesize:maxsize})
+
     reader.onload = function (e) {
       e.preventDefault();
       let transactionPayloads = [];
@@ -108,6 +117,9 @@ class TransactionUpload extends React.Component {
 
           transactionPayloads.push(transaction);
         })
+      }
+      else{
+        self.setState({error:"Unknown format"});
       }
 
 
