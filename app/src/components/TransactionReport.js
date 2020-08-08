@@ -17,9 +17,44 @@ class TransactionReport extends React.Component {
             success: '',
             transDateStart: new Date().toISOString(),
             transDateEnd: new Date().toISOString(),
-            selectStatus: '',
-            currency:''
+            selectedCurrencyOption: null,
+            CurrencyOptions: [],
+            StatusOptions: [],
+            selectedStatusOption: null
         };
+
+        this.baseState = this.state
+    }
+
+    componentWillMount() {
+        this.getCurrencyOptions();
+        this.GetStatusOptions();
+    }
+
+    resetForm = () => {
+        this.setState(this.baseState)
+        this.getCurrencyOptions();
+        this.GetStatusOptions();
+    }
+
+    GetStatusOptions() {
+        const options = [
+            { value: 'A', label: 'Approved' },
+            { value: 'R', label: 'Failed/Rejected' },
+            { value: 'D', label: 'Finished/Done' }
+        ]
+        this.setState({ StatusOptions: options });
+    }
+
+    async getCurrencyOptions() {
+        const res = await axios.get('http://localhost:53293/api/Transaction/Currency')
+        const data = res.data
+
+        const options = data.map((currElement, index) => ({
+            "value": data[index],
+            "label": data[index]
+        }))
+        this.setState({ CurrencyOptions: options })
     }
 
     transDateStartChange(value, formattedValue) {
@@ -37,17 +72,18 @@ class TransactionReport extends React.Component {
     }
 
     selectStatusChange(optionSelected) {
-        this.setState({ selectStatus: optionSelected.value });
+        this.setState({ selectedStatusOption: optionSelected });
         console.log(optionSelected.label);
     }
 
     selectCurrencyChange(optionSelected) {
-        this.setState({ currency: optionSelected.value });
+        this.setState({ selectedCurrencyOption: optionSelected });
         console.log(optionSelected.label);
     }
 
     render() {
 
+        const self = this;
         const formgroup = {
             justifyContent: "center"
         };
@@ -68,17 +104,6 @@ class TransactionReport extends React.Component {
             width: "80px"
         };
 
-        const options = [
-            { value: 'A', label: 'Approved' },
-            { value: 'R', label: 'Failed/Rejected' },
-            { value: 'D', label: 'Finished/Done' }
-        ]
-
-        const CurrencyOptions = [
-            { value: 'USD', label: 'USD' },
-            { value: 'THB', label: 'THB' }
-        ]
-
         return (
             <div>
                 <Jumbotron>
@@ -91,8 +116,8 @@ class TransactionReport extends React.Component {
                                 dateFormat={"DD-MM-YYYY"}
                                 size={"md"}
                                 style={datepicker}
-                                value={this.state.transDateStart}
-                                onChange={(v, f) => this.transDateStartChange(v, f)} />
+                                value={self.state.transDateStart}
+                                onChange={(v, f) => self.transDateStartChange(v, f)} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Transaction End Date</Label>
@@ -100,28 +125,30 @@ class TransactionReport extends React.Component {
                                 dateFormat={"DD-MM-YYYY"}
                                 size={"md"}
                                 style={datepicker}
-                                value={this.state.transDateEnd}
-                                onChange={(v, f) => this.transDateEndChange(v, f)} />
+                                value={self.state.transDateEnd}
+                                onChange={(v, f) => self.transDateEndChange(v, f)} />
                         </FormGroup>
                         <FormGroup>
-                        <Label>Transaction Status</Label>
+                            <Label>Transaction Status</Label>
                             <Select
                                 id="select-status"
-                                options={options}
-                                onChange={(value) => this.selectStatusChange(value)}
+                                value={self.state.selectedStatusOption}
+                                options={self.state.StatusOptions}
+                                onChange={(value) => self.selectStatusChange(value)}
                             />
                         </FormGroup>
                         <FormGroup>
-                        <Label>Currency</Label>
+                            <Label>Currency</Label>
                             <Select
                                 id="select-currency"
-                                options={CurrencyOptions}
-                                onChange={(value) => this.selectCurrencyChange(value)}
+                                value={self.state.selectedCurrencyOption}
+                                options={self.state.CurrencyOptions}
+                                onChange={(value) => self.selectCurrencyChange(value)}
                             />
                         </FormGroup>
                         <FormGroup>
                             <Button style={btnsearch} size="md">Search</Button>{' '}
-                            <Button style={btnclear} size="md">Clear</Button>{' '}
+                            <Button style={btnclear} onClick={() => self.resetForm()} size="md">Clear</Button>{' '}
                         </FormGroup>
                     </Form>
                 </Jumbotron>
