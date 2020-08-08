@@ -28,6 +28,24 @@
   color: #61dafb;
 }
 
+#select-status {
+  width: 150px;
+  margin-left:10px;
+}
+
+#select-currency {
+  width: 100px;
+  margin-left:10px;
+}
+
+.form-inline .form-group {
+  margin-left:15px;
+}
+
+.rdp-input-group{
+  margin-left:10px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

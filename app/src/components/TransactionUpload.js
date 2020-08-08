@@ -1,5 +1,5 @@
 import React from 'react';
-import { Jumbotron, Button } from 'reactstrap';
+import { Jumbotron, Button,Spinner  } from 'reactstrap';
 import axios from 'axios';
 import ReactFileReader from 'react-file-reader';
 import * as xml2js from 'xml2js';
@@ -33,9 +33,16 @@ class TransactionUpload extends React.Component {
   async upload() {
     const self = this;
     if(self.state.filesize > 1){
-      self.setState({error:"File size is too large for upload"})
-      return;
+      self.setState({error:"File size is too large for upload"});
+      alert(self.state.error);
+      return false;
     }
+
+    if(self.state.error.length > 0){
+      alert(self.state.error);
+      return false;
+    }
+
     const url = 'http://localhost:53293/api/Transaction/uploadtransactions';
 
     let data = {
@@ -50,7 +57,10 @@ class TransactionUpload extends React.Component {
         self.setState({ filename: '' });
       }, (error) => {
         console.log(error);
-        self.setState({ error: error });
+        self.setState({ filename: '' });
+        self.setState({ error: error.message });
+        alert(self.state.error);
+        return false;
       });
   }
 
@@ -61,7 +71,8 @@ class TransactionUpload extends React.Component {
     let file = files[0];
     let size = file.size
     let maxsize = (size/1024);
-    self.setState({filesize:maxsize})
+    self.setState({filesize:maxsize});
+    self.setState({error:''});
 
     reader.onload = function (e) {
       e.preventDefault();
@@ -152,16 +163,16 @@ class TransactionUpload extends React.Component {
     return (
       <div>
         <Jumbotron>
-          <h1 className="display-3">2C2P Transaction Upload</h1>
+          <h1 className="display-3">Transaction Upload</h1>
           <br></br>
           <p className="lead">{this.state.filename}</p>
           <p className="lead" style={error}>{this.state.error}</p>
           <p className="lead">{this.state.success}</p>
           <span style={inline}>
             <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv,.xml'}>
-              <Button style={btnbrowse} size="sm">Browse</Button>{' '}
+              <Button style={btnbrowse} size="md">Browse</Button>{' '}
             </ReactFileReader>
-            <Button style={btnupload} onClick={() => this.upload()} size="sm">Upload</Button>{' '}
+            <Button style={btnupload} onClick={() => this.upload()} size="md">Upload</Button>{' '}
           </span>
         </Jumbotron>
       </div>

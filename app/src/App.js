@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Nav from './components/Nav'
 import Home from './components/Home';
 import TransactionUpload from './components/TransactionUpload'
+import TransactionReport from './components/TransactionReport'
 import './App.css';
 
 class App extends Component {
@@ -20,7 +21,8 @@ class App extends Component {
 						<Nav />
 						<Switch>
 							<Route path="/Home" component={Home} />
-              <Route path="/TransactionUpload" component={TransactionUpload} />
+							<Route path="/TransactionUpload" component={TransactionUpload} />
+							<Route path="/TransactionReport" component={TransactionReport} />
 							<Route component={Home} />
 						</Switch>
 					</div>

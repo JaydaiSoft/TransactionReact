@@ -10,7 +10,7 @@ class Home extends React.Component {
         return (
             <div>
               <Jumbotron>
-                <h1 className="display-3">2C2P Transaction Service</h1>
+                <h1 className="display-3">Transaction Service</h1>
                 <p className="lead">simplifies e-commerce and m-commerce payments for merchants everyday.</p>
               </Jumbotron>
             </div>
