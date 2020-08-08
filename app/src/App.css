@@ -29,7 +29,7 @@
 }
 
 #select-status {
-  width: 150px;
+  width: 170px;
   margin-left:10px;
 }
 
@@ -44,6 +44,16 @@
 
 .rdp-input-group{
   margin-left:10px;
+}
+
+.jumbrotron{
+  margin-bottom: 0px;
+}
+
+.forRdO{
+  margin-top: 40px;
+  border: 1px solid;
+  border-color: #337ab7;
 }
 
 @keyframes App-logo-spin {

@@ -159,6 +159,10 @@ class TransactionUpload extends React.Component {
       fontWeight: "bold",
       color: "Red"
     };
+    const success = {
+      fontWeight: "bold",
+      color: "Green"
+    };
 
     return (
       <div>
@@ -167,7 +171,7 @@ class TransactionUpload extends React.Component {
           <br></br>
           <p className="lead">{this.state.filename}</p>
           <p className="lead" style={error}>{this.state.error}</p>
-          <p className="lead">{this.state.success}</p>
+          <p className="lead" style={success}>{this.state.success}</p>
           <span style={inline}>
             <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.csv,.xml'}>
               <Button style={btnbrowse} size="md">Browse</Button>{' '}
